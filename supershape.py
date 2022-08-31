@@ -1,3 +1,10 @@
+bl_info = {
+    "name": "SuperShape Addon",
+    "blender": (2, 80, 0),
+    "category": "Object",
+}
+
+
 import numpy as np
 import bpy
 import bmesh
@@ -168,7 +175,6 @@ def update_bpy_mesh(x, y, z, obj):
     obj: bpy.types.Object
         Object to update. Note that the long./lat. resolution must match.
     '''
-    import bmesh
     x = x.reshape(-1, 1)
     y = y.reshape(-1, 1)
     z = z.reshape(-1, 1)
