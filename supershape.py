@@ -1,8 +1,10 @@
 bl_info = {
-    "name": "SuperShape Addon",
+    "name": "SuperFormula",
     "blender": (2, 80, 0),
-    "category": "Object",
+    "category": "Mesh",
 }
+
+import bpy
 
 
 import numpy as np
@@ -193,13 +195,34 @@ def update_bpy_mesh(x, y, z, obj):
     obj.data.update()
     bm.free()
     del bm
-    
-    
-# Remove default cube
-#bpy.data.objects.remove(bpy.data.objects['Cube'], do_unlink=True)
 
-# Generate supershape
-shape = (100, 100)
-obj = make_bpy_mesh(shape, weld=True)
-x, y, z = supercoords(FLOWER, shape=shape)
-update_bpy_mesh(x, y, z, obj)
+class ObjectSuperFormula(bpy.types.Operator):
+    """My Object Moving Script"""      # Use this as a tooltip for menu items and buttons.
+    bl_idname = "mesh.move_x"        # Unique identifier for buttons and menu items to reference.
+    bl_label = "SuperFormula mesh"         # Display name in the interface.
+    bl_options = {'REGISTER', 'UNDO'}  # Enable undo for the operator.
+
+    def execute(self, context):        # execute() is called when running the operator.
+        # Generate supershape
+        shape = (100, 100)
+        obj = make_bpy_mesh(shape, weld=True)
+        x, y, z = supercoords(FLOWER, shape=shape)
+        update_bpy_mesh(x, y, z, obj)
+
+        return {'FINISHED'}            # Lets Blender know the operator finished successfully.
+
+def menu_func(self, context):
+    self.layout.operator(ObjectSuperFormula.bl_idname)
+
+def register():
+    bpy.utils.register_class(ObjectSuperFormula)
+    bpy.types.VIEW3D_MT_object.append(menu_func)  # Adds the new operator to an existing menu.
+
+def unregister():
+    bpy.utils.unregister_class(ObjectSuperFormula)
+
+
+# This allows you to run the script directly from Blender's Text editor
+# to test the add-on without having to install it.
+if __name__ == "__main__":
+    register()
