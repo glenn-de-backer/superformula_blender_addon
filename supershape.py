@@ -12,14 +12,6 @@ import bpy
 import bmesh
 from mathutils import Vector
 
-'''Predefined params of a sphere'''
-SPHERE = [0.01, 1., 1., 0.1, 0.01, 10.0]
-'''Predefined params of round cube'''
-ROUNDCUBE = [4, 1., 1., 10., 10., 10.]
-'''Predefined params of a flower-like object'''
-FLOWER = [7, 1, 1, 0.2, 1.7, 1.7]
-'''Predefined params of a cone-like object'''
-CONE = [[4, 1, 1, 100, 1, 1], [4, 1, 1, 1, 1, 1]]
 
 def supercoords(params, shape=(50,50)):
     '''Returns coordinates of a parametrized 3D supershape.
@@ -198,15 +190,27 @@ def update_bpy_mesh(x, y, z, obj):
 
 class ObjectSuperFormula(bpy.types.Operator):
     """My Object Moving Script"""      # Use this as a tooltip for menu items and buttons.
-    bl_idname = "mesh.move_x"        # Unique identifier for buttons and menu items to reference.
+    bl_idname = "mesh.superformula"        # Unique identifier for buttons and menu items to reference.
     bl_label = "SuperFormula mesh"         # Display name in the interface.
     bl_options = {'REGISTER', 'UNDO'}  # Enable undo for the operator.
+    
+    smooth: bpy.props.BoolProperty(name="Smooth", default=True)
+    m: bpy.props.FloatProperty(name="M1", default=7.0, step=50)
+    a: bpy.props.FloatProperty(name="A1", default=1.0, step=1)
+    b: bpy.props.FloatProperty(name="B1", default=1.0, step=1)
+    sync: bpy.props.BoolProperty(name="Sync", default=True)
+    m2: bpy.props.FloatProperty(name="M2", default=7.0, step=50)
+    a2: bpy.props.FloatProperty(name="A2", default=1.0, step=1)
+    b2: bpy.props.FloatProperty(name="B2", default=1.0, step=1)
 
     def execute(self, context):        # execute() is called when running the operator.
         # Generate supershape
         shape = (100, 100)
-        obj = make_bpy_mesh(shape, weld=True)
-        x, y, z = supercoords(FLOWER, shape=shape)
+        SHAPE_1 = [self.m, self.a, self.b, 0.2, 1.7, 1.7]
+        SHAPE_2 = [self.m2, self.a2, self.b2, 0.2, 1.7, 1.7]
+                
+        obj = make_bpy_mesh(shape, smooth=self.smooth, weld=True)
+        x, y, z = supercoords([SHAPE_1, SHAPE_2], shape=shape)
         update_bpy_mesh(x, y, z, obj)
 
         return {'FINISHED'}            # Lets Blender know the operator finished successfully.
