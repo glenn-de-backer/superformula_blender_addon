@@ -1,16 +1,13 @@
+import numpy as np
+import bpy
+import bmesh
+from mathutils import Vector
+
 bl_info = {
     "name": "SuperFormula",
     "blender": (2, 80, 0),
     "category": "Mesh",
 }
-
-import bpy
-
-
-import numpy as np
-import bpy
-import bmesh
-from mathutils import Vector
 
 
 def supercoords(params, shape=(50,50)):
@@ -197,27 +194,101 @@ class ObjectSuperFormula(bpy.types.Operator):
     bl_label = "SuperFormula mesh"         # Display name in the interface.
     bl_options = {'REGISTER', 'UNDO'}  # Enable undo for the operator.
     
-    # Properties
-    smooth: bpy.props.BoolProperty(name="Smooth", default=True)
-    resolution_long: bpy.props.IntProperty(name="Resolution long", default=100)
-    resolution_lat: bpy.props.IntProperty(name="Resolution lat", default=100)
-
-
-    m: bpy.props.FloatProperty(name="M1", default=7.0, step=50)
-    a: bpy.props.FloatProperty(name="A1", default=1.0, step=1)
-    b: bpy.props.FloatProperty(name="B1", default=1.0, step=1)
-    n1: bpy.props.FloatProperty(name="N1", default=0.2, step=1)
-    n2: bpy.props.FloatProperty(name="N2", default=1.7, step=1)
-    n3: bpy.props.FloatProperty(name="N3", default=1.7, step=1)
+    #
+    #  Properties
+    smooth: bpy.props.BoolProperty(
+        name="Smooth",
+         default=True
+    )
     
-    sync: bpy.props.BoolProperty(name="Sync parameters", default=True)
+    # Resolution
+    resolution_long: bpy.props.IntProperty(
+        name="Resolution long",
+        default=100
+    )
+
+    resolution_lat: bpy.props.IntProperty(
+        name="Resolution lat",
+        default=100
+    )
+
+    # Shape 1
+    m: bpy.props.FloatProperty(
+        name="M1",
+        default=7.0,
+        step=50
+    )
+
+    a: bpy.props.FloatProperty(
+        name="A1", 
+        default=1.0, 
+        step=1
+    )
+
+    b: bpy.props.FloatProperty(
+        name="B1", 
+        default=1.0, 
+        step=1
+    )
+
+    n1: bpy.props.FloatProperty(
+        name="N1",
+        default=0.2,
+        step=1
+    )
+    n2: bpy.props.FloatProperty(
+        name="N2", 
+        default=1.7, 
+        step=1
+    )
+
+    n3: bpy.props.FloatProperty(
+        name="N3", 
+        default=1.7, 
+        step=1
+    )
     
-    m2: bpy.props.FloatProperty(name="M2", default=7.0, step=50)
-    a2: bpy.props.FloatProperty(name="A2", default=1.0, step=1)
-    b2: bpy.props.FloatProperty(name="B2", default=1.0, step=1)
-    n1_2: bpy.props.FloatProperty(name="N1_2", default=0.2, step=1)
-    n2_2: bpy.props.FloatProperty(name="N2_2", default=1.7, step=1)
-    n3_2: bpy.props.FloatProperty(name="N3_2", default=1.7, step=1)    
+    sync: bpy.props.BoolProperty(
+        name="Sync parameters", 
+        default=True
+    )
+    
+    # Shape 2
+    m2: bpy.props.FloatProperty(
+        name="M2", 
+        default=7.0, 
+        step=50
+    )
+
+    a2: bpy.props.FloatProperty(
+        name="A2", 
+        default=1.0, 
+        step=1
+    )
+
+    b2: bpy.props.FloatProperty(
+        name="B2",
+        default=1.0, 
+        step=1
+    )
+
+    n1_2: bpy.props.FloatProperty(
+        name="N1_2", 
+        default=0.2, 
+        step=1
+    )
+
+    n2_2: bpy.props.FloatProperty(
+        name="N2_2", 
+        default=1.7, 
+        step=1
+    )
+
+    n3_2: bpy.props.FloatProperty(
+        name="N3_2", 
+        default=1.7, 
+        step=1
+    )    
 
     # Execute operator
     def execute(self, context):        # execute() is called when running the operator.
@@ -232,6 +303,8 @@ class ObjectSuperFormula(bpy.types.Operator):
             SHAPE_2 = [self.m2, self.a2, self.b2, self.n1_2,  self.n2_2,  self.n3_2]
         else:
             SHAPE_2 = [self.m, self.a, self.b, self.n1, self.n2, self.n3]
+
+            # update properties
             self.m2 = self.m
             self.a2 = self.a      
             self.b2 = self.b
@@ -248,7 +321,8 @@ class ObjectSuperFormula(bpy.types.Operator):
         # update mesh
         update_bpy_mesh(x, y, z, obj)
 
-        return {'FINISHED'}            # Lets Blender know the operator finished successfully.
+        # return that it's finished
+        return {'FINISHED'}            
 
 def menu_func(self, context):
     self.layout.operator(ObjectSuperFormula.bl_idname)
@@ -257,7 +331,7 @@ def register():
     # Register operator
     bpy.utils.register_class(ObjectSuperFormula)
     bpy.types.VIEW3D_MT_object.append(menu_func)  # Adds the new operator to an existing menu.
-
+ 
 def unregister():
     # Unregister operator    
     bpy.utils.unregister_class(ObjectSuperFormula)
