@@ -204,13 +204,30 @@ class ObjectSuperFormula(bpy.types.Operator):
     b2: bpy.props.FloatProperty(name="B2", default=1.0, step=1)
 
     def execute(self, context):        # execute() is called when running the operator.
-        # Generate supershape
         shape = (100, 100)
+    
+        # create shape 1 and shape 2
         SHAPE_1 = [self.m, self.a, self.b, 0.2, 1.7, 1.7]
-        SHAPE_2 = [self.m2, self.a2, self.b2, 0.2, 1.7, 1.7]
+
+        SHAPE_2 = []
+
+        print(self.sync)
                 
+        if self.sync == False:
+            SHAPE_2 = [self.m2, self.a2, self.b2, 0.2, 1.7, 1.7]
+        else:
+            SHAPE_2 = [self.m, self.a, self.b, 0.2, 1.7, 1.7]
+            self.m2 = self.m
+            self.a2 = self.a      
+            self.b2 = self.b            
+
+        # create object                
         obj = make_bpy_mesh(shape, smooth=self.smooth, weld=True)
+        
+        # generate shape
         x, y, z = supercoords([SHAPE_1, SHAPE_2], shape=shape)
+        
+        # update mesh
         update_bpy_mesh(x, y, z, obj)
 
         return {'FINISHED'}            # Lets Blender know the operator finished successfully.
