@@ -249,8 +249,8 @@ class ObjectSuperFormula(bpy.types.Operator):
     )
     
     sync: bpy.props.BoolProperty(
-        name="Sync parameters", 
-        default=True
+        name="Use same parameters as Shape 1", 
+        default=False
     )
     
     # Shape 2
@@ -289,6 +289,40 @@ class ObjectSuperFormula(bpy.types.Operator):
         default=1.7, 
         step=1
     )    
+
+    def draw(self, context):
+        layout = self.layout
+        
+        # add smooth
+        row = layout.row()
+        row.prop(self, "smooth")
+        
+        # box resolution
+        boxResolution = layout.box()
+        boxResolution.label(text="Resolution")
+        boxResolution.prop(self, "resolution_long")
+        boxResolution.prop(self, "resolution_lat")   
+        
+        # box shape 1
+        boxShape1 = layout.box()
+        boxShape1.label(text="Shape 1 definition")
+        boxShape1.prop(self, "m")
+        boxShape1.prop(self, "a")
+        boxShape1.prop(self, "b")
+        boxShape1.prop(self, "n1")
+        boxShape1.prop(self, "n2")
+        boxShape1.prop(self, "n3") 
+
+        # box shape 1
+        boxShape2 = layout.box()
+        boxShape2.label(text="Shape 2 definition")
+        boxShape2.prop(self, "sync")
+        boxShape2.prop(self, "m2")
+        boxShape2.prop(self, "a2")
+        boxShape2.prop(self, "b2")
+        boxShape2.prop(self, "n1_2")
+        boxShape2.prop(self, "n2_2")
+        boxShape2.prop(self, "n3_2")                
 
     # Execute operator
     def execute(self, context):        # execute() is called when running the operator.
