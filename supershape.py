@@ -187,39 +187,57 @@ def update_bpy_mesh(x, y, z, obj):
     obj.data.update()
     bm.free()
     del bm
+    
+    
 
 class ObjectSuperFormula(bpy.types.Operator):
+    # Definition
     """My Object Moving Script"""      # Use this as a tooltip for menu items and buttons.
     bl_idname = "mesh.superformula"        # Unique identifier for buttons and menu items to reference.
     bl_label = "SuperFormula mesh"         # Display name in the interface.
     bl_options = {'REGISTER', 'UNDO'}  # Enable undo for the operator.
     
+    # Properties
     smooth: bpy.props.BoolProperty(name="Smooth", default=True)
+    resolution_long: bpy.props.IntProperty(name="Resolution long", default=100)
+    resolution_lat: bpy.props.IntProperty(name="Resolution lat", default=100)
+
+
     m: bpy.props.FloatProperty(name="M1", default=7.0, step=50)
     a: bpy.props.FloatProperty(name="A1", default=1.0, step=1)
     b: bpy.props.FloatProperty(name="B1", default=1.0, step=1)
-    sync: bpy.props.BoolProperty(name="Sync", default=True)
+    n1: bpy.props.FloatProperty(name="N1", default=0.2, step=1)
+    n2: bpy.props.FloatProperty(name="N2", default=1.7, step=1)
+    n3: bpy.props.FloatProperty(name="N3", default=1.7, step=1)
+    
+    sync: bpy.props.BoolProperty(name="Sync parameters", default=True)
+    
     m2: bpy.props.FloatProperty(name="M2", default=7.0, step=50)
     a2: bpy.props.FloatProperty(name="A2", default=1.0, step=1)
     b2: bpy.props.FloatProperty(name="B2", default=1.0, step=1)
+    n1_2: bpy.props.FloatProperty(name="N1_2", default=0.2, step=1)
+    n2_2: bpy.props.FloatProperty(name="N2_2", default=1.7, step=1)
+    n3_2: bpy.props.FloatProperty(name="N3_2", default=1.7, step=1)    
 
+    # Execute operator
     def execute(self, context):        # execute() is called when running the operator.
-        shape = (100, 100)
+        shape = (self.resolution_long, self.resolution_lat)
     
         # create shape 1 and shape 2
-        SHAPE_1 = [self.m, self.a, self.b, 0.2, 1.7, 1.7]
-
+        SHAPE_1 = [self.m, self.a, self.b, self.n1, self.n2, self.n3]
         SHAPE_2 = []
 
-        print(self.sync)
-                
+        # check if sync is enabled or not                
         if self.sync == False:
-            SHAPE_2 = [self.m2, self.a2, self.b2, 0.2, 1.7, 1.7]
+            SHAPE_2 = [self.m2, self.a2, self.b2, self.n1_2,  self.n2_2,  self.n3_2]
         else:
-            SHAPE_2 = [self.m, self.a, self.b, 0.2, 1.7, 1.7]
+            SHAPE_2 = [self.m, self.a, self.b, self.n1, self.n2, self.n3]
             self.m2 = self.m
             self.a2 = self.a      
-            self.b2 = self.b            
+            self.b2 = self.b
+            self.n1_2 = self.n1
+            self.n2_2 = self.n2
+            self.n3_2 = self.n3                                              
 
         # create object                
         obj = make_bpy_mesh(shape, smooth=self.smooth, weld=True)
@@ -236,10 +254,12 @@ def menu_func(self, context):
     self.layout.operator(ObjectSuperFormula.bl_idname)
 
 def register():
+    # Register operator
     bpy.utils.register_class(ObjectSuperFormula)
     bpy.types.VIEW3D_MT_object.append(menu_func)  # Adds the new operator to an existing menu.
 
 def unregister():
+    # Unregister operator    
     bpy.utils.unregister_class(ObjectSuperFormula)
 
 
