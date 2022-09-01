@@ -196,9 +196,20 @@ class ObjectSuperFormula(bpy.types.Operator):
     
     #
     #  Properties
+    shapes: bpy.props.EnumProperty(
+        items=(
+            ('0', "None", "None"),
+            ("1", "Flower", "Flower"),
+            ("2", "Sphere", "Sphere"),            
+            ),
+        name="Shapes",
+        description="Shapes"
+    )
+        
+    
     smooth: bpy.props.BoolProperty(
         name="Smooth",
-         default=True
+        default=True
     )
     
     # Resolution
@@ -295,6 +306,8 @@ class ObjectSuperFormula(bpy.types.Operator):
         
         # add smooth
         row = layout.row()
+        row.prop(self, "shapes")
+        row = layout.row()        
         row.prop(self, "smooth")
         
         # box resolution
@@ -325,8 +338,32 @@ class ObjectSuperFormula(bpy.types.Operator):
         boxShape2.prop(self, "n3_2")                
 
     # Execute operator
-    def execute(self, context):        # execute() is called when running the operator.
+    def execute(self, context):
+
+        # define shape resolution
         shape = (self.resolution_long, self.resolution_lat)
+        
+        #
+        # check if predefined shapes are selected
+        #
+        if self.shapes == '1': 
+           # Flower
+           self.sync = True
+           self.m = 7
+           self.b = 1.0
+           self.c = 1.0
+           self.n1 = 0.2
+           self.n2 = 1.7
+           self.n3 = 1.7        
+        elif self.shapes == '2': 
+           # Sphere
+           self.sync = True
+           self.m = 0.01
+           self.b = 1.0
+           self.c = 1.0
+           self.n1 = 0.1
+           self.n2 = 0.01
+           self.n3 = 10.0     
     
         # create shape 1 and shape 2
         SHAPE_1 = [self.m, self.a, self.b, self.n1, self.n2, self.n3]
