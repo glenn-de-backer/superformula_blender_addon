@@ -187,11 +187,11 @@ def update_bpy_mesh(x, y, z, obj):
     
     
 
-class ObjectSuperFormula(bpy.types.Operator):
+class ObjectSuperFormula3D(bpy.types.Operator):
     # Definition
-    """My Object Moving Script"""      # Use this as a tooltip for menu items and buttons.
-    bl_idname = "mesh.superformula"        # Unique identifier for buttons and menu items to reference.
-    bl_label = "SuperFormula mesh"         # Display name in the interface.
+    """Superformale 3D Mesh"""    
+    bl_idname = "mesh.superformula_3d"     
+    bl_label = "SuperFormula 3D Mesh"      
     bl_options = {'REGISTER', 'UNDO'}  # Enable undo for the operator.
     
     #
@@ -227,7 +227,7 @@ class ObjectSuperFormula(bpy.types.Operator):
     m: bpy.props.FloatProperty(
         name="M1",
         default=7.0,
-        step=50
+        step=1
     )
 
     a: bpy.props.FloatProperty(
@@ -396,16 +396,16 @@ class ObjectSuperFormula(bpy.types.Operator):
         return {'FINISHED'}            
 
 def menu_func(self, context):
-    self.layout.operator(ObjectSuperFormula.bl_idname)
+    self.layout.operator(ObjectSuperFormula3D.bl_idname)
 
 def register():
     # Register operator
-    bpy.utils.register_class(ObjectSuperFormula)
+    bpy.utils.register_class(ObjectSuperFormula3D)
     bpy.types.VIEW3D_MT_object.append(menu_func)  # Adds the new operator to an existing menu.
  
 def unregister():
     # Unregister operator    
-    bpy.utils.unregister_class(ObjectSuperFormula)
+    bpy.utils.unregister_class(ObjectSuperFormula3D)
 
 
 # This allows you to run the script directly from Blender's Text editor
