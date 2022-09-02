@@ -196,18 +196,6 @@ class ObjectSuperFormula3D(bpy.types.Operator):
     
     #
     #  Properties
-    shapes: bpy.props.EnumProperty(
-        items=(
-            ('0', "None", "None"),
-            ("1", "Flower", "Flower"),
-            ("2", "Sphere", "Sphere"),            
-            ("3", "Starfish", "Starfish"),            
-            ),
-        name="Shapes",
-        description="Shapes"
-    )
-        
-    
     smooth: bpy.props.BoolProperty(
         name="Smooth",
         default=True
@@ -343,54 +331,6 @@ class ObjectSuperFormula3D(bpy.types.Operator):
 
         # define shape resolution
         shape = (self.resolution_long, self.resolution_lat)
-        
-        #
-        # check if predefined shapes are selected
-        #
-        if self.shapes == '1': # flower
-           # Flower
-           self.m = 7
-           self.b = 1.0
-           self.c = 1.0
-           self.n1 = 0.2
-           self.n2 = 1.7
-           self.n3 = 1.7 
-           self.m2 = 7
-           self.b2 = 1.0
-           self.c2 = 1.0
-           self.n1_2 = 0.2
-           self.n2_2 = 1.7
-           self.n3_2 = 1.7  
-        elif self.shapes == '2': # sphere
-           # Sphere
-           self.m = 0.01
-           self.b = 1.0
-           self.c = 1.0
-           self.n1 = 0.1
-           self.n2 = 0.01
-           self.n3 = 10.0
-           self.m2 = 0.01
-           self.b2 = 1.0
-           self.c2 = 1.0
-           self.n1_2 = 0.1
-           self.n2_2 = 0.01
-           self.n3_2 = 10.0
-        elif self.shapes == '3': # starfish
-           # Sphere
-           self.m = 5
-           self.b = 1.0
-           self.c = 1.0
-           self.n1 = 0.1
-           self.n2 = 1.7
-           self.n3 = 1.7
-           self.m2 = 1
-           self.b2 = 1.0
-           self.c2 = 1.0
-           self.n1_2 = 0.3
-           self.n2_2 = 0.5
-           self.n3_2 = 0.5           
-            
-                           
     
         # create shape 1 and shape 2
         SHAPE_1 = [self.m, self.a, self.b, self.n1, self.n2, self.n3]
