@@ -362,20 +362,28 @@ class ObjectSuperFormula3D(bpy.types.Operator):
         # return that it's finished
         return {'FINISHED'}            
 
+
+
+# register
+def add_object_button(self, context):
+    # Add mesh menu item
+    self.layout.operator(ObjectSuperFormula3D.bl_idname,text="Add SuperFormula 3D Mesh",icon='PLUGIN')
+
+
 def menu_func(self, context):
+    # Search menu function
     self.layout.operator(ObjectSuperFormula3D.bl_idname)
 
 def register():
     # Register operator
     bpy.utils.register_class(ObjectSuperFormula3D)
-    bpy.types.VIEW3D_MT_object.append(menu_func)  # Adds the new operator to an existing menu.
+    bpy.types.VIEW3D_MT_object.append(menu_func) 
+    bpy.types.VIEW3D_MT_mesh_add.append(add_object_button)
  
 def unregister():
     # Unregister operator    
     bpy.utils.unregister_class(ObjectSuperFormula3D)
+    bpy.types.VIEW3D_MT_mesh_add.remove(add_object_button)
 
-
-# This allows you to run the script directly from Blender's Text editor
-# to test the add-on without having to install it.
 if __name__ == "__main__":
     register()
