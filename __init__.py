@@ -290,6 +290,11 @@ class ObjectSuperFormula3D(bpy.types.Operator):
         step=1
     )    
 
+    scale: bpy.props.FloatVectorProperty(
+        name="Scale", 
+        default=(1.0,1.0,1.0) 
+    )    
+
     def draw(self, context):
         layout = self.layout
         
@@ -324,7 +329,11 @@ class ObjectSuperFormula3D(bpy.types.Operator):
         boxShape2.prop(self, "b2")
         boxShape2.prop(self, "n1_2")
         boxShape2.prop(self, "n2_2")
-        boxShape2.prop(self, "n3_2")                
+        boxShape2.prop(self, "n3_2")     
+
+        # Scale
+        boxScale = layout.box()
+        boxScale.prop(self, "scale")           
 
     # Execute operator
     def execute(self, context):
@@ -358,6 +367,9 @@ class ObjectSuperFormula3D(bpy.types.Operator):
         
         # update mesh
         update_bpy_mesh(x, y, z, obj)
+
+        # scale mesh
+        obj.scale = self.scale
 
         # return that it's finished
         return {'FINISHED'}            
