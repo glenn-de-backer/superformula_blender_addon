@@ -10,9 +10,9 @@ bl_info = {
 }
 
 
-def supercoords(params, shape=(50,50)):
+def supercoords(params, shape=(50, 50)):
     '''Returns coordinates of a parametrized 3D supershape.
-    
+
     See
     http://paulbourke.net/geometry/supershape/
     https://en.wikipedia.org/wiki/Superformula
@@ -53,26 +53,27 @@ def supercoords(params, shape=(50,50)):
 
     params = np.atleast_2d(params)
     if params.shape[0] == 1:
-        params = np.tile(params, (2,1))
+        params = np.tile(params, (2, 1))
 
-    sf = lambda alpha, sp: (
-        np.abs(np.cos(sp[0]*alpha/4.)/sp[1])**sp[4] + 
+    def sf(alpha, sp): return (
+        np.abs(np.cos(sp[0]*alpha/4.)/sp[1])**sp[4] +
         np.abs(np.sin(sp[0]*alpha/4.)/sp[2])**sp[5]
     )**(-1/sp[3])
 
-    u = np.linspace(-np.pi, np.pi, shape[0]) # long., theta
-    v = np.linspace(-np.pi/2, np.pi/2, shape[1]) # lat., phi
-        
-    g = np.meshgrid(v, u)
-    uv = np.stack((g[1],g[0]),-1)
-    r1 = sf(uv[...,0], params[0])
-    r2 = sf(uv[...,1], params[1])    
+    u = np.linspace(-np.pi, np.pi, shape[0])  # long., theta
+    v = np.linspace(-np.pi/2, np.pi/2, shape[1])  # lat., phi
 
-    x = r1 * np.cos(u)[:,None] * r2 * np.cos(v)[None, :]
-    y = r1 * np.sin(u)[:,None] * r2 * np.cos(v)[None, :]
+    g = np.meshgrid(v, u)
+    uv = np.stack((g[1], g[0]), -1)
+    r1 = sf(uv[..., 0], params[0])
+    r2 = sf(uv[..., 1], params[1])
+
+    x = r1 * np.cos(u)[:, None] * r2 * np.cos(v)[None, :]
+    y = r1 * np.sin(u)[:, None] * r2 * np.cos(v)[None, :]
     z = r2 * np.sin(v)[None, :]
 
-    return x,y,z
+    return x, y, z
+
 
 def make_bpy_mesh(shape, name='supershape', coll=None, smooth=True, weld=False):
     '''Create a Blender (>2.8) mesh from supershape coordinates.
@@ -151,6 +152,7 @@ def make_bpy_mesh(shape, name='supershape', coll=None, smooth=True, weld=False):
 
     return obj
 
+
 def update_bpy_mesh(x, y, z, obj):
     '''Update a Blender (>2.8) mesh from supershape coordinates.
     Adapted from
@@ -184,23 +186,29 @@ def update_bpy_mesh(x, y, z, obj):
     obj.data.update()
     bm.free()
     del bm
-    
-    
+
 
 class ObjectSuperFormula3D(bpy.types.Operator):
     # Definition
-    """Superformale 3D Mesh"""    
-    bl_idname = "mesh.superformula_3d"     
-    bl_label = "SuperFormula 3D Mesh"      
+    """Superformale 3D Mesh"""
+    bl_idname = "mesh.superformula_3d"
+    bl_label = "SuperFormula 3D Mesh"
     bl_options = {'REGISTER', 'UNDO'}  # Enable undo for the operator.
-    
+
     #
     #  Properties
     smooth: bpy.props.BoolProperty(
         name="Smooth",
+        description="Enable smooth shading",
         default=True
     )
-    
+
+    weld: bpy.props.BoolProperty(
+        name="Weld",
+        description="Add weld operator",
+        default=True
+    )    
+
     # Resolution
     resolution_long: bpy.props.IntProperty(
         name="Resolution long",
@@ -220,14 +228,14 @@ class ObjectSuperFormula3D(bpy.types.Operator):
     )
 
     a: bpy.props.FloatProperty(
-        name="A1", 
-        default=1.0, 
+        name="A1",
+        default=1.0,
         step=1
     )
 
     b: bpy.props.FloatProperty(
-        name="B1", 
-        default=1.0, 
+        name="B1",
+        default=1.0,
         step=1
     )
 
@@ -237,80 +245,138 @@ class ObjectSuperFormula3D(bpy.types.Operator):
         step=1
     )
     n2: bpy.props.FloatProperty(
-        name="N2", 
-        default=1.7, 
+        name="N2",
+        default=1.7,
         step=1
     )
 
     n3: bpy.props.FloatProperty(
-        name="N3", 
-        default=1.7, 
+        name="N3",
+        default=1.7,
         step=1
     )
-    
+
     sync: bpy.props.BoolProperty(
-        name="Use same parameters as Shape 1", 
+        name="Use same parameters as Shape 1",
         default=False
     )
-    
+
     # Shape 2
     m2: bpy.props.FloatProperty(
-        name="M2", 
-        default=7.0, 
+        name="M2",
+        default=7.0,
         step=50
     )
 
     a2: bpy.props.FloatProperty(
-        name="A2", 
-        default=1.0, 
+        name="A2",
+        default=1.0,
         step=1
     )
 
     b2: bpy.props.FloatProperty(
         name="B2",
-        default=1.0, 
+        default=1.0,
         step=1
     )
 
     n1_2: bpy.props.FloatProperty(
-        name="N1_2", 
-        default=0.2, 
+        name="N1_2",
+        default=0.2,
         step=1
     )
 
     n2_2: bpy.props.FloatProperty(
-        name="N2_2", 
-        default=1.7, 
+        name="N2_2",
+        default=1.7,
         step=1
     )
 
     n3_2: bpy.props.FloatProperty(
-        name="N3_2", 
-        default=1.7, 
+        name="N3_2",
+        default=1.7,
         step=1
-    )    
+    )
 
     scale: bpy.props.FloatVectorProperty(
-        name="Scale", 
-        default=(1.0,1.0,1.0),
+        name="Scale",
+        default=(1.0, 1.0, 1.0),
+        description="Scale object",
         subtype="XYZ"
-    )    
+    )
+
+    def shapes_update(self, context):
+        self.sync = False                
+        shape_values = []
+        match self.shapes:
+            case "Default" :
+                shape_values = [
+                    [7.0, 1.0, 1.0, 0.2, 1.7, 1.7],
+                    [7.0, 1.0, 1.0, 0.2, 1.7, 1.7]    
+                ]
+            case "Starfish" :
+                self.weld = True
+                shape_values = [
+                    [7.0, 1.0, 1.0, 0.2, 1.48, 1.48],
+                    [1.95, 1.0, 1.0, 0.2, 1.12, 1.01]    
+                ]
+            case "Clover" :
+                self.weld = False
+                shape_values = [
+                    [7.93, 1.0, 1.0, 0.10, 6.35, -0.23],
+                    [4.0, -0.05, -0.05, 1.0, -0.28, 1.0]    
+                ]      
+            case "SharkTooth" :
+                shape_values = [
+                    [2.64, 1.0, 1.0, 0.30, 1.48, 1.48],
+                    [1.80, 1.07, 1.30, 0.20, 1.07, 1.01]    
+                ]                              
+
+        # update values
+        self.m  = shape_values[0][0]
+        self.b  = shape_values[0][1]
+        self.a  = shape_values[0][2]
+        self.n1 = shape_values[0][3]
+        self.n2 = shape_values[0][4]
+        self.n3 = shape_values[0][5]
+
+        self.m2   = shape_values[1][0]
+        self.b2   = shape_values[1][1]
+        self.a2   = shape_values[1][2]
+        self.n1_2 = shape_values[1][3]
+        self.n2_2 = shape_values[1][4]
+        self.n3_2 = shape_values[1][5]
+
+
+    shapes: bpy.props.EnumProperty(
+        name="Examples",
+        description="Examples of meshes",
+        items=[
+            ('Default', "Default", ""),
+            ('Starfish', "Starfish", ""),
+            ('Clover', "Clover", ""),
+            ('SharkTooth', "Shark Tooth", ""),            
+        ],
+        update=shapes_update
+    )
 
     def draw(self, context):
         layout = self.layout
-        
-        # add smooth
+
+        row = layout.row(align=True)
+        row.prop(self, "smooth")
+        row.prop(self, "weld")
+
+        # shapes
         row = layout.row()
         row.prop(self, "shapes")
-        row = layout.row()        
-        row.prop(self, "smooth")
-        
+
         # box resolution
         boxResolution = layout.box()
         boxResolution.label(text="Resolution")
         boxResolution.prop(self, "resolution_long")
-        boxResolution.prop(self, "resolution_lat")   
-        
+        boxResolution.prop(self, "resolution_lat")
+
         # box shape 1
         boxShape1 = layout.box()
         boxShape1.label(text="Shape 1 definition")
@@ -319,7 +385,7 @@ class ObjectSuperFormula3D(bpy.types.Operator):
         boxShape1.prop(self, "b")
         boxShape1.prop(self, "n1")
         boxShape1.prop(self, "n2")
-        boxShape1.prop(self, "n3") 
+        boxShape1.prop(self, "n3")
 
         # box shape 1
         boxShape2 = layout.box()
@@ -330,42 +396,43 @@ class ObjectSuperFormula3D(bpy.types.Operator):
         boxShape2.prop(self, "b2")
         boxShape2.prop(self, "n1_2")
         boxShape2.prop(self, "n2_2")
-        boxShape2.prop(self, "n3_2")     
+        boxShape2.prop(self, "n3_2")
 
         # Scale
         boxScale = layout.box()
-        boxScale.prop(self, "scale")           
+        boxScale.prop(self, "scale")
 
     # Execute operator
     def execute(self, context):
 
         # define shape resolution
         shape = (self.resolution_long, self.resolution_lat)
-    
+
         # create shape 1 and shape 2
         SHAPE_1 = [self.m, self.a, self.b, self.n1, self.n2, self.n3]
         SHAPE_2 = []
 
-        # check if sync is enabled or not                
+        # check if sync is enabled or not
         if self.sync == False:
-            SHAPE_2 = [self.m2, self.a2, self.b2, self.n1_2,  self.n2_2,  self.n3_2]
+            SHAPE_2 = [self.m2, self.a2, self.b2,
+                       self.n1_2,  self.n2_2,  self.n3_2]
         else:
             SHAPE_2 = [self.m, self.a, self.b, self.n1, self.n2, self.n3]
 
             # update properties
             self.m2 = self.m
-            self.a2 = self.a      
+            self.a2 = self.a
             self.b2 = self.b
             self.n1_2 = self.n1
             self.n2_2 = self.n2
-            self.n3_2 = self.n3                                              
+            self.n3_2 = self.n3
 
-        # create object                
-        obj = make_bpy_mesh(shape, smooth=self.smooth, weld=True)
-        
+        # create object
+        obj = make_bpy_mesh(shape, smooth=self.smooth, weld=self.weld)
+
         # generate shape
         x, y, z = supercoords([SHAPE_1, SHAPE_2], shape=shape)
-        
+
         # update mesh
         update_bpy_mesh(x, y, z, obj)
 
@@ -373,30 +440,33 @@ class ObjectSuperFormula3D(bpy.types.Operator):
         obj.scale = self.scale
 
         # return that it's finished
-        return {'FINISHED'}            
-
+        return {'FINISHED'}
 
 
 # register
 def add_object_button(self, context):
     # Add mesh menu item
-    self.layout.operator(ObjectSuperFormula3D.bl_idname,text="Add SuperFormula 3D Mesh",icon='PLUGIN')
+    self.layout.operator(ObjectSuperFormula3D.bl_idname,
+                         text="Add SuperFormula 3D Mesh", icon='PLUGIN')
 
 
 def menu_func(self, context):
     # Search menu function
     self.layout.operator(ObjectSuperFormula3D.bl_idname)
 
+
 def register():
     # Register operator
     bpy.utils.register_class(ObjectSuperFormula3D)
-    bpy.types.VIEW3D_MT_object.append(menu_func) 
+    bpy.types.VIEW3D_MT_object.append(menu_func)
     bpy.types.VIEW3D_MT_mesh_add.append(add_object_button)
- 
+
+
 def unregister():
-    # Unregister operator    
+    # Unregister operator
     bpy.utils.unregister_class(ObjectSuperFormula3D)
     bpy.types.VIEW3D_MT_mesh_add.remove(add_object_button)
+
 
 if __name__ == "__main__":
     register()
