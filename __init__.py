@@ -310,6 +310,7 @@ class ObjectSuperFormula3D(bpy.types.Operator):
         shape_values = []
         match self.shapes:
             case "Default" :
+                self.weld = True
                 shape_values = [
                     [7.0, 1.0, 1.0, 0.2, 1.7, 1.7],
                     [7.0, 1.0, 1.0, 0.2, 1.7, 1.7]    
@@ -327,22 +328,23 @@ class ObjectSuperFormula3D(bpy.types.Operator):
                     [4.0, -0.05, -0.05, 1.0, -0.28, 1.0]    
                 ]      
             case "SharkTooth" :
+                self.weld = False
                 shape_values = [
-                    [2.64, 1.0, 1.0, 0.30, 1.48, 1.48],
-                    [1.80, 1.07, 1.30, 0.20, 1.07, 1.01]    
+                    [2.63, 1.03, 1.05, 0.29, 1.48, 1.48],
+                    [-1.90, 1.31, 1.78, 0.20, 0.64, 0.95]    
                 ]                              
 
         # update values
         self.m  = shape_values[0][0]
-        self.b  = shape_values[0][1]
-        self.a  = shape_values[0][2]
+        self.a  = shape_values[0][1]
+        self.b  = shape_values[0][2]
         self.n1 = shape_values[0][3]
         self.n2 = shape_values[0][4]
         self.n3 = shape_values[0][5]
 
         self.m2   = shape_values[1][0]
-        self.b2   = shape_values[1][1]
-        self.a2   = shape_values[1][2]
+        self.a2   = shape_values[1][1]
+        self.b2   = shape_values[1][2]
         self.n1_2 = shape_values[1][3]
         self.n2_2 = shape_values[1][4]
         self.n3_2 = shape_values[1][5]
