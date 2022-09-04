@@ -292,7 +292,8 @@ class ObjectSuperFormula3D(bpy.types.Operator):
 
     scale: bpy.props.FloatVectorProperty(
         name="Scale", 
-        default=(1.0,1.0,1.0) 
+        default=(1.0,1.0,1.0),
+        subtype="XYZ"
     )    
 
     def draw(self, context):
