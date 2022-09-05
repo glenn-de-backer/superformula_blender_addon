@@ -75,7 +75,7 @@ def supercoords(params, shape=(50, 50)):
     return x, y, z
 
 
-def make_bpy_mesh(shape, name='supershape', coll=None, smooth=True, weld=False):
+def make_bpy_mesh(shape, name='supershape', coll=None, smooth=True, weld=False, subdivide=False):
     '''Create a Blender (>2.8) mesh from supershape coordinates.
     Adapted from
     http://wiki.theprovingground.org/blender-py-supershape
@@ -145,6 +145,10 @@ def make_bpy_mesh(shape, name='supershape', coll=None, smooth=True, weld=False):
     if weld:
         mod = obj.modifiers.new("CloseSeams", 'WELD')
         mod.merge_threshold = 1e-3
+    if subdivide:
+        mod_subsurf = obj.modifiers.new("Subdivide mesh", 'SUBSURF')
+        mod_subsurf.levels = 1
+        mod_subsurf.render_levels = 1            
     if coll is None:
         coll = bpy.context.collection
     if coll is not False:
@@ -207,6 +211,12 @@ class ObjectSuperFormula3D(bpy.types.Operator):
         name="Weld",
         description="Add weld operator",
         default=True
+    )    
+
+    subdivide: bpy.props.BoolProperty(
+        name="Subdivide",
+        description="Add subdivision",
+        default=False
     )    
 
     # Resolution
@@ -403,6 +413,7 @@ class ObjectSuperFormula3D(bpy.types.Operator):
         # Scale
         boxScale = layout.box()
         boxScale.prop(self, "scale")
+        boxScale.prop(self, "subdivide")
 
     # Execute operator
     def execute(self, context):
@@ -430,7 +441,7 @@ class ObjectSuperFormula3D(bpy.types.Operator):
             self.n3_2 = self.n3
 
         # create object
-        obj = make_bpy_mesh(shape, smooth=self.smooth, weld=self.weld)
+        obj = make_bpy_mesh(shape, smooth=self.smooth, weld=self.weld, subdivide=self.subdivide)
 
         # generate shape
         x, y, z = supercoords([SHAPE_1, SHAPE_2], shape=shape)
