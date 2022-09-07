@@ -7,7 +7,7 @@ bl_info = {
     "name": "SuperFormula Addon",
     "author": "Glenn De Backer",
     "description": "An addond that makes it possible to generate meshes based on the superformula logic",
-    "version": (1,0),
+    "version": (1,0,1),
     "blender": (3, 0, 0),
     "location": "View3D > Add > Mesh",
     "doc_url": "https://github.com/glenn-de-backer/superformula_blender_addon",
