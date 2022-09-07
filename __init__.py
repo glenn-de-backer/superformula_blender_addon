@@ -4,9 +4,15 @@ import bmesh
 from mathutils import Vector
 
 bl_info = {
-    "name": "SuperFormula",
-    "blender": (2, 80, 0),
-    "category": "Mesh",
+    "name": "SuperFormula Addon",
+    "author": "Glenn De Backer",
+    "description": "An addond that makes it possible to generate meshes based on the superformula logic",
+    "version": (1,0),
+    "blender": (3, 20, 0),
+    "location": "View3D > Add > Mesh",
+    "doc_url": "https://github.com/glenn-de-backer/superformula_blender_addon",
+    "support": "COMMUNITY",
+    "category": "Add Mesh",
 }
 
 
