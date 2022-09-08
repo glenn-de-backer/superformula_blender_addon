@@ -7,6 +7,19 @@ Partly based on Christop Heindl's [supershape code](https://github.com/cheind/su
 ![screenshot](https://user-images.githubusercontent.com/475413/189068452-77c6b3b8-2239-4c67-87ec-b2230306ea6e.jpg)
 
 
+### Download and installation
+
+You can download the [Latest version here](https://github.com/glenn-de-backer/superformula_blender_addon/releases/download/v1.0.1/SuperShape_v1.0.1.zip).
+
+To install the addon you can follow this [easy tutorial](https://www.youtube.com/watch?v=vYh1qh9y1MI)
+
+### Usage
+
+* method 1: Press **F3** and search for **Superformula mesh**
+* method 2: **SHIFT+A** > **Mesh** > **Superformula Mesh**
+
+Modify the parameters to create new meshes. You can use it as a playfull blackbox or read up about the theory if you want to have all the nitty gritty details [here](http://paulbourke.net/geometry/supershape/)
+
 ### Changelog
 
 **version 1.0.1**
